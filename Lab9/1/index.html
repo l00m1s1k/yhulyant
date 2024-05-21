@@ -1,0 +1,67 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping List App</title>
+</head>
+<body>
+  <h1>Shopping List App</h1>
+  <input type="text" id="listName" placeholder="Enter list name">
+  <button onclick="showList()">Show List</button>
+  <table id="listTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="listBody"></tbody>
+  </table>
+  <button onclick="addList()">Add List</button>
+  <button onclick="deleteList()">Delete List</button>
+
+  <script>
+    async function showList() {
+      const name = document.getElementById('listName').value;
+      const response = await fetch(`/shopping-lists/${name}`);
+      const data = await response.json();
+      const tableBody = document.getElementById('listBody');
+      tableBody.innerHTML = '';
+      const row = tableBody.insertRow();
+      const nameCell = row.insertCell(0);
+      const quantityCell = row.insertCell(1);
+      const statusCell = row.insertCell(2);
+      nameCell.textContent = data.name;
+      quantityCell.textContent = data.quantity;
+      statusCell.textContent = data.status;
+    }
+
+    async function addList() {
+      const name = prompt('Enter list name:');
+      const quantity = prompt('Enter quantity:');
+      const status = confirm('Is purchased?');
+      const newList = { name, quantity, status };
+      const response = await fetch('/shopping-lists', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newList)
+      });
+      alert(await response.text());
+    }
+
+    async function deleteList() {
+      const name = prompt('Enter list name to delete:');
+      const response = await fetch(`/shopping-lists/${name}`, {
+        method: 'DELETE'
+      });
+      alert(await response.text());
+    }
+  </script>
+</body>
+</html>

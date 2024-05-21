@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptocurrency Rates</title>
+</head>
+<body>
+    <h1>Cryptocurrency Rates</h1>
+    <ul id="cryptoRates"></ul>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:3000');
+
+        socket.onmessage = function(event) {
+            const cryptoRates = document.getElementById('cryptoRates');
+            const rate = JSON.parse(event.data);
+            cryptoRates.innerHTML += '<li>' + rate.currency + ': ' + rate.rate + '</li>';
+        };
+    </script>
+</body>
+</html>
